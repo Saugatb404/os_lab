@@ -1,47 +1,116 @@
-#include<stdio.h>
-#include<sys/stat.h>
-#include<string.h>
-int main(){
-FILE *fp,*f1,*f2;
-int opt;
-char line[100];
-printf("enter ur choice\n");
-scanf("%d",&opt);
-switch(opt){
-case 1:
-if((fp=popen("/bin/ls","r"))==NULL){
-printf("pipeline error");
-}
-printf("list command\n");
-printf("*************\n");
-while(fgets(line,80,fp)){
-printf("%s",line);
-}
-break;
-case 2:
-printf("PWD comman\n");
-printf("**********\n");
-if((f1=popen("/bin/pwd","r"))==NULL){
-printf("PWD function error\n");
-}
-while(fgets(line,80,f1)){
-printf("%s",line);
-}
-break;
-case 3:
-printf("cat commond\n");
-printf("***********\n");
-if((f2=fopen("ch.c","w"))==NULL){
-printf("Cat function error\n");
-}
-while(fgets(line,80,f2)){
-printf("%s",line);
-}
-break;
-case 4:
-printf("exit\n");
-printf("****\n");
-exit(0);
-break;
-}
+#include <stdio.h>      // printf(), scanf(), fgets()
+#include <stdlib.h>     // popen(), pclose(), exit()
+
+int main()
+{
+    FILE *pipe;              // Used to read output from Linux commands
+    int option;
+    char line[100];
+
+    printf("=================================\n");
+    printf(" Demonstration of popen()\n");
+    printf("=================================\n");
+
+    printf("1. List Files (ls)\n");
+    printf("2. Print Working Directory (pwd)\n");
+    printf("3. Display Source File (cat)\n");
+    printf("4. Exit\n");
+
+    printf("\nEnter your choice: ");
+    scanf("%d", &option);
+
+    switch (option)
+    {
+        //----------------------------------------
+        // Execute ls command
+        //----------------------------------------
+        case 1:
+
+            pipe = popen("ls", "r");
+
+            if (pipe == NULL)
+            {
+                printf("Error executing ls command.\n");
+                return 1;
+            }
+
+            printf("\nFiles in Current Directory\n");
+            printf("--------------------------\n");
+
+            while (fgets(line, sizeof(line), pipe) != NULL)
+            {
+                printf("%s", line);
+            }
+
+            pclose(pipe);
+
+            break;
+
+        //----------------------------------------
+        // Execute pwd command
+        //----------------------------------------
+        case 2:
+
+            pipe = popen("pwd", "r");
+
+            if (pipe == NULL)
+            {
+                printf("Error executing pwd command.\n");
+                return 1;
+            }
+
+            printf("\nCurrent Working Directory\n");
+            printf("-------------------------\n");
+
+            while (fgets(line, sizeof(line), pipe) != NULL)
+            {
+                printf("%s", line);
+            }
+
+            pclose(pipe);
+
+            break;
+
+        //----------------------------------------
+        // Execute cat command
+        //----------------------------------------
+        case 3:
+
+            pipe = popen("cat ch.c", "r");
+
+            if (pipe == NULL)
+            {
+                printf("Error executing cat command.\n");
+                return 1;
+            }
+
+            printf("\nContents of ch.c\n");
+            printf("-------------------------\n");
+
+            while (fgets(line, sizeof(line), pipe) != NULL)
+            {
+                printf("%s", line);
+            }
+
+            pclose(pipe);
+
+            break;
+
+        //----------------------------------------
+        // Exit
+        //----------------------------------------
+        case 4:
+
+            printf("Program terminated.\n");
+            exit(0);
+
+        //----------------------------------------
+        // Invalid choice
+        //----------------------------------------
+        default:
+
+            printf("Invalid choice.\n");
+    }
+
+    return 0;
 }
