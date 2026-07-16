@@ -1,54 +1,137 @@
-#include<stdio.h>
-#include<conio.h>
-struct process{
-int pid,bt,tt,wt;
+#include <stdio.h>
+
+/*
+    Structure representing one process.
+*/
+struct Process
+{
+    int pid;             // Process ID
+    int burstTime;       // Original Burst Time
+    int remainingTime;   // Remaining Burst Time
+    int waitingTime;     // Waiting Time
+    int turnaroundTime;  // Turnaround Time
 };
-int main(){
-struct process x[10],p[30];
-int i,j,k,tot=0,m,n;
-float wttime=0.0,tottime=0.0,a1,a2;
-clrscr();
-printf("\nEnter the number of process:\t");
-scanf("%d",&n);
-for(i=1;i<=n;i++){
-x[i].pid=i;
-printf("\nEnter the Burst Time:\t");
-scanf("%d",&x[i].bt);
-tot=tot+x[i].bt;
-}
-printf("\nTotal Burst Time:\t%d",tot);
-p[0].tt=0;
-k=1;
-printf("\nEnter the Time Slice:\t");
-scanf("%d",&m);
-for(j=1;j<=tot;j++){
-for(i=1;i<=n;i++){
-if(x[i].bt!=0){
-p[k].pid=i;
-if(x[i].bt-m<0){
-p[k].wt=p[k-1].tt;
-p[k].bt=x[i].bt;
-p[k].tt=p[k].wt+x[i].bt;
-x[i].bt=0;
-k++;
-}
-else{
-p[k].wt=p[k-1].tt;
-p[k].tt=p[k].wt+m;
-x[i].bt=x[i].bt-m;
-k++;
-} } }
-}
-printf("\nProcess id \twt \ttt");
-for(i=1;i<k;i++){
-printf("\n\t%d \t%d \t%d",p[i].pid,p[i].wt,p[i].tt);
-wttime=wttime+p[i].wt;
-tottime=tottime+p[i].tt;
-a1=wttime/n;
-a2=tottime/n;
-}
-printf("\n\nAverage Waiting Time:\t%f",a1);
-printf("\n\nAverage TurnAround Time:\t%f",a2);
-getch();
-return 0;
+
+int main()
+{
+    int n;
+    int timeQuantum;
+
+    printf("=====================================\n");
+    printf(" Round Robin Scheduling Algorithm\n");
+    printf("=====================================\n\n");
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    struct Process process[n];
+
+    //----------------------------------------
+    // Input Burst Times
+    //----------------------------------------
+
+    for (int i = 0; i < n; i++)
+    {
+        process[i].pid = i + 1;
+
+        printf("Enter Burst Time for Process %d: ",
+               process[i].pid);
+
+        scanf("%d", &process[i].burstTime);
+
+        process[i].remainingTime = process[i].burstTime;
+        process[i].waitingTime = 0;
+    }
+
+    printf("Enter Time Quantum: ");
+    scanf("%d", &timeQuantum);
+
+    //----------------------------------------
+    // Round Robin Scheduling
+    //----------------------------------------
+
+    int currentTime = 0;
+    int completed = 0;
+
+    while (completed < n)
+    {
+        int executed = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (process[i].remainingTime > 0)
+            {
+                executed = 1;
+
+                if (process[i].remainingTime <= timeQuantum)
+                {
+                    currentTime += process[i].remainingTime;
+
+                    process[i].remainingTime = 0;
+
+                    process[i].turnaroundTime = currentTime;
+
+                    process[i].waitingTime =
+                        process[i].turnaroundTime -
+                        process[i].burstTime;
+
+                    completed++;
+                }
+                else
+                {
+                    currentTime += timeQuantum;
+                    process[i].remainingTime -= timeQuantum;
+                }
+            }
+        }
+
+        if (!executed)
+            break;
+    }
+
+    //----------------------------------------
+    // Calculate Totals
+    //----------------------------------------
+
+    int totalWaitingTime = 0;
+    int totalTurnaroundTime = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        totalWaitingTime += process[i].waitingTime;
+        totalTurnaroundTime += process[i].turnaroundTime;
+    }
+
+    double averageWaitingTime =
+        (double)totalWaitingTime / n;
+
+    double averageTurnaroundTime =
+        (double)totalTurnaroundTime / n;
+
+    //----------------------------------------
+    // Display Result
+    //----------------------------------------
+
+    printf("\n-----------------------------------------------------------\n");
+    printf("PID\tBurst\tWaiting\tTurnaround\n");
+    printf("-----------------------------------------------------------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d\t%d\t%d\t%d\n",
+               process[i].pid,
+               process[i].burstTime,
+               process[i].waitingTime,
+               process[i].turnaroundTime);
+    }
+
+    printf("-----------------------------------------------------------\n");
+
+    printf("Average Waiting Time    : %.2f\n",
+           averageWaitingTime);
+
+    printf("Average Turnaround Time : %.2f\n",
+           averageTurnaroundTime);
+
+    return 0;
 }
