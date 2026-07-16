@@ -26,10 +26,9 @@ int main()
     struct Process process[n];
     struct Process temp;
 
-    //----------------------------------------
-    // Input Process Information
-    //----------------------------------------
 
+    // Input Process Information
+   
     for (int i = 0; i < n; i++)
     {
         process[i].pid = i + 1;
@@ -43,10 +42,10 @@ int main()
         scanf("%d", &process[i].priority);
     }
 
-    //----------------------------------------
+   
     // Sort by Priority
     // Smaller Priority Number = Higher Priority
-    //----------------------------------------
+  
 
     for (int i = 0; i < n - 1; i++)
     {
@@ -61,9 +60,9 @@ int main()
         }
     }
 
-    //----------------------------------------
+
     // Calculate Waiting Time
-    //----------------------------------------
+
 
     process[0].waitingTime = 0;
 
@@ -74,10 +73,9 @@ int main()
             process[i - 1].burstTime;
     }
 
-    //----------------------------------------
+   
     // Calculate Turnaround Time
-    //----------------------------------------
-
+    
     for (int i = 0; i < n; i++)
     {
         process[i].turnaroundTime =
@@ -85,9 +83,9 @@ int main()
             process[i].burstTime;
     }
 
-    //----------------------------------------
+
     // Calculate Totals
-    //----------------------------------------
+
 
     int totalWaitingTime = 0;
     int totalTurnaroundTime = 0;
@@ -98,9 +96,9 @@ int main()
         totalTurnaroundTime += process[i].turnaroundTime;
     }
 
-    //----------------------------------------
+
     // Calculate Averages
-    //----------------------------------------
+    
 
     double averageWaitingTime =
         (double)totalWaitingTime / n;
@@ -108,9 +106,9 @@ int main()
     double averageTurnaroundTime =
         (double)totalTurnaroundTime / n;
 
-    //----------------------------------------
+
     // Display Result
-    //----------------------------------------
+  
 
     printf("\n-----------------------------------------------------------------\n");
     printf("PID\tPriority\tBurst\tWaiting\tTurnaround\n");
