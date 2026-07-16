@@ -1,40 +1,102 @@
-#include<stdio.h>
+#include <stdio.h>
+
+/*
+    Structure representing one process.
+*/
+struct Process
+{
+    int pid;             // Process ID
+    int burstTime;       // CPU Burst Time
+    int waitingTime;     // Waiting Time
+    int turnaroundTime;  // Turnaround Time
+};
+
+int main()
+{
+    int n;
+
+    printf("=====================================\n");
+    printf(" First Come First Serve Scheduling\n");
+    printf("=====================================\n\n");
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    // Variable Length Array of struct Process to hold process information
+    struct Process process[n];
 
 
-struct process{
-    int pid; int bt; int wt,tt;
-}p[10];
+    // Input burst times
+
+    for (int i = 0; i < n; i++)
+    {
+        process[i].pid = i + 1;
+
+        printf("Enter Burst Time for Process %d: ", process[i].pid);
+        scanf("%d", &process[i].burstTime);
+    }
 
 
-int main(){
-int i,n,totwt,tottt,avg1,avg2;
-clrscr();
-printf("enter the no of process \n");
-scanf("%d",&n);
-for(i=1;i<=n;i++){
-    p[i].pid=i;
-    printf("enter the burst time \n");
-    scanf("%d",&p[i].bt);
-}
-p[1].wt=0;
-p[1].tt=p[1].bt+p[1].wt;
-i=2;
-while(i<=n){
-    p[i].wt=p[i-1].bt+p[i-1].wt;
-    p[i].tt=p[i].bt+p[i].wt;
-    i++;
-}
-i=1;
-totwt=tottt=0;
-printf("\n processid \t bt\t wt\t tt\n");
-while(i<=n){
-    printf("\n\t%d \t%d \t%d \t%d",p[i].pid,p[i].bt,p[i].wt,p[i].tt);
-    totwt=p[i].wt+totwt;
-    tottt=p[i].tt+tottt;
-    i++;
-}
-avg1=totwt/n; avg2=tottt/n;
-printf("\navg1=%d \t avg2=%d \t",avg1,avg2);
-getch();
-return 0;
+    // Calculate Waiting Time
+
+    process[0].waitingTime = 0;
+
+    for (int i = 1; i < n; i++)
+    {
+        process[i].waitingTime =
+            process[i - 1].waitingTime +
+            process[i - 1].burstTime;
+    }
+
+    // Calculate Turnaround Time
+
+    for (int i = 0; i < n; i++)
+    {
+        process[i].turnaroundTime =
+            process[i].waitingTime +
+            process[i].burstTime;
+    }
+
+
+    // Calculate Totals
+
+    int totalWaitingTime = 0;
+    int totalTurnaroundTime = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        totalWaitingTime += process[i].waitingTime;
+        totalTurnaroundTime += process[i].turnaroundTime;
+    }
+
+   
+
+    double averageWaitingTime =
+        (double)totalWaitingTime / n;
+
+    double averageTurnaroundTime =
+        (double)totalTurnaroundTime / n;
+
+
+    // Display Table
+
+    printf("\n----------------------------------------------------------\n");
+    printf("PID\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    printf("----------------------------------------------------------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d\t%d\t\t%d\t\t%d\n",
+               process[i].pid,
+               process[i].burstTime,
+               process[i].waitingTime,
+               process[i].turnaroundTime);
+    }
+
+    printf("----------------------------------------------------------\n");
+
+    printf("Average Waiting Time    : %.2f\n", averageWaitingTime);
+    printf("Average Turnaround Time : %.2f\n", averageTurnaroundTime);
+
+    return 0;
 }
