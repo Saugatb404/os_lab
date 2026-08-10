@@ -1,5 +1,5 @@
-#include <stdio.h>      // printf(), scanf(), fgets()
-#include <stdlib.h>     // popen(), pclose(), exit()
+#include <stdio.h>     
+#include <stdlib.h>   
 
 int main()
 {
@@ -20,13 +20,15 @@ int main()
     scanf("%d", &option);
 
     switch (option)
+    
     {
         //----------------------------------------
         // Execute ls command
         //----------------------------------------
         case 1:
 
-            pipe = popen("ls", "r");
+            pipe = popen("ls", "r");  // pipe open creates a direct pipeline (code means exec ls command and give the program a stream from which o/p can be read)
+
 
             if (pipe == NULL)
             {
@@ -37,7 +39,7 @@ int main()
             printf("\nFiles in Current Directory\n");
             printf("--------------------------\n");
 
-            while (fgets(line, sizeof(line), pipe) != NULL)
+            while (fgets(line, sizeof(line), pipe) != NULL) //Read one line from the command's output through the pipe.
             {
                 printf("%s", line);
             }
