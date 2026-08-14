@@ -35,13 +35,13 @@ int main()
     // Child executes ls command
     if (pid == 0)
     {
-        execl("/bin/ls", "ls", "-l", (char *)0);  
+        execl("/bin/ls", "ls", "-l", NULL);  
     }
 
-    // Parent waits for child
+    // Parent waits for child process to finish
     if (pid > 0)
     {
-        wait((int *)0);
+        wait(NULL);
     }
 
 
